@@ -1,34 +1,15 @@
-zookeeper:
-  image: wurstmeister/zookeeper
-  hostname: zookeeper
+zk-kk-km:
+  image: mshauneu/zookeeper-kafka-manager
   restart: always
-  mem_limit: 2G
+  mem_limit: 1G
   ports:
     - "2181:2181"
-
-kafka:
-  image: wurstmeister/kafka
-  hostname: kafka
-  restart: always
-  mem_limit: 16G
-  ports:
     - "9092:9092"
+    - "9093:9093"
+    - "9094:9000"
   environment:
-    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    KAFKA_ADVERTISED_HOST_NAME: localhost
-    KAFKA_ADVERTISED_PORT: 9092
-  links:
-    - zookeeper:zookeeper
-
-km:
-  image: sheepkiller/kafka-manager
-  hostname: kafka
-  restart: always
-  mem_limit: 2G
-  ports:
-    - "9000:9000"
-  environment:
-    ZK_HOSTS: zookeeper:2181
-    APPLICATION_SECRET: tractionboard
-  links:
-    - zookeeper:zookeeper
+    JMX_PORT: 9093
+    ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+  volumes:
+    - ./data/zk:/var/lib/zookeeper
+    - ./data/kafka:/tmp/kafka-logs
